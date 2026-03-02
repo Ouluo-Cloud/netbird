@@ -194,10 +194,20 @@ var (
 	}
 )
 
+func pprofAddr() string {
+	listenAddr := os.Getenv("NB_PPROF_ADDR")
+	if listenAddr == "" {
+		return "localhost:6060"
+	}
+
+	return listenAddr
+}
+
 func startPprof() {
 	go func() {
-		log.Debugf("Starting pprof server on 127.0.0.1:6060")
-		if err := http.ListenAndServe("127.0.0.1:6060", nil); err != nil {
+        pprof_addr := pprofAddr()
+		log.Debugf("Starting pprof server on %v", pprof_addr)
+		if err := http.ListenAndServe(pprof_addr, nil); err != nil {
 			log.Fatalf("pprof server failed: %v", err)
 		}
 	}()
